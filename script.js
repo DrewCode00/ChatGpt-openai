@@ -1,22 +1,22 @@
-import bot from './assets/bot.svg'
-import user from './assets/user.svg'
+import bot from './public/assets/bot.svg'
+import user from './public/assets/user.svg'
 
-const form = document.querySelector('form')
-const chatContainer =document.querySelector('#chat_container')
+const form = document.querySelector('form');
+const chatContainer =document.querySelector('#chat_container');
 
-let loadInterval
+let loadInterval;
 
-function loader(element){
-  element.textContent =''
+function loader(element) {
+  element.textContent ='';
 
-  loadInterval =setInterval(()=>{
+  loadInterval =setInterval(()=> {
     //updated the text content of the loading indicator
     element.textContent +='.';
 
 
     //If the loading indicator has reached three dots, reset it
 
-    if(element.textContent === '.....'){
+    if(element.textContent === '...') {
       element.textContent ='';
 
     }
@@ -27,12 +27,14 @@ function loader(element){
 
 
 function typeText(element, text){
-  let index = 0
-  let interval = setInterval(()=>{
+  let index = 0;
+
+
+  let interval = setInterval(()=> {
 
     if(index < text.length){
-      element.innerHTML += text.charAt(index)
-      index++
+      element.innerHTML += text.charAt(index);
+      index++;
     }else{
       clearInterval(interval)
     }
@@ -75,12 +77,12 @@ function chatStripe(isAi, value, uniqueId){
 
 
 const handleSubmit = async(e) => {
-  e.preventDefault()
+  e.preventDefault();
 
-  const data = new FormData(Form)
+  const data = new FormData(form);
 
   //User's Chatstripe
-  chatContainer.innerHTML += chatStripe(failse,data.get('prompt'))
+  chatContainer.innerHTML += chatStripe(false, data.get('prompt'));
 
   //To clear the textArea Input
 
@@ -89,58 +91,59 @@ const handleSubmit = async(e) => {
 
   //bot's chatStripe
 
-  const uniqueId =generateUniqueId()
-  chatContainer.innerHTML += chatStripe(true, " ", uniqueId)
+  const uniqueId =generateUniqueId();
+  chatContainer.innerHTML += chatStripe(true, " ", uniqueId);
 
 
   //To focus scroll to the bottom
 
-  chatContainer.scrollTop =chtContainer.scrollHeight;
+  chatContainer.scrollTop =chatContainer.scrollHeight;
 
 
   //Specific Message Div
 
-  const meassgeDiv = document.getElementById(uniqueId)
+  const messageDiv = document.getElementById(uniqueId);
 
 
   //mesaageDiv.innerHTML ="..."
-  loader(messageDiv)
+  loader(messageDiv);
 
-
-  const response = await fetch('https://codexim0y.onrender.com/',{
+  
+  const response = await fetch('http://localhost:5000',{
     method: 'POST',
     headers:{
-      'Content-Type': 'application/json',
-
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       prompt: data.get('prompt')
     })
   })
 
-  clearInterval(loadInterval)
-  messageDiv.innerHTML =" "
+  clearInterval(loadInterval);
+  messageDiv.innerHTML ='';
 
 
   if(response.ok){
     const data = await response.json();
-    const parseData = data.bot.trim() // Trims any trailing spaces/'\n'abort
+    const parsedData = data.bot.trim(); // Trims any trailing spaces/'\n'abort
 
+    console.log({parsedData});
 
-    typeText(mesaageDiv, parsedData)
+    typeText(messageDiv, parsedData);
   }else{
-    const err = await response.text()
+    const err = await response.text();
 
-    messageDiv.innerHTML = "Something Went wrong"
-    alert(err)
+    messageDiv.innerHTML = "Something Went wrong";
+    
+    alert(err);
   }
     }
-  
-
-    form.addEventListner('submit', handleSubmit)
+    form.addEventListener('submit', handleSubmit);
     form.addEventListener('keyup', (e) => {
-      if(e.keyCode ===3){
-        handleSubmit(e)
+      if(e.keyCode ===13) {
+        handleSubmit(e);
       }
     })
+  
+  
 
