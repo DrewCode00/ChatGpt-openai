@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "server": "nodemon server"
+    "server": "nodemon server",
+    "build": "babel src -d lib"
   },
   "dependencies": {
     "cors": "^2.8.5",
